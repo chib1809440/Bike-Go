@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -17,15 +16,19 @@ export class UsersService {
     return this.userModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(phoneNumber: string) {
+    const findUser = await this.userModel.findOne({
+      phoneNumber: phoneNumber,
+    });
+    return findUser;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async getProfile(phoneNumber: string) {
+    const findUser = await this.userModel
+      .findOne({
+        phoneNumber: phoneNumber,
+      })
+      .select('-password');
+    return findUser;
   }
 }
