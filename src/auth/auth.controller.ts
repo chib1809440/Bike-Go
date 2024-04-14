@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Headers, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto, SignInDto } from './dto/auth.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -21,7 +21,10 @@ export class AuthController {
       },
     },
   })
-  signIn(@Body() signInDto: SignInDto) {
+  signIn(@Body() signInDto: SignInDto, @Headers() headers: Headers) {
+    if (headers['x-public-key']) {
+      signInDto.public_key = headers['x-public-key'];
+    }
     return this.authService.signIn(signInDto);
   }
 
@@ -49,5 +52,10 @@ export class AuthController {
   @ApiResponse({ status: 409, description: 'Existed.' })
   signUp(@Body() signUpDto: AuthDto) {
     return this.authService.signUp(signUpDto);
+  }
+
+  @Post('save-public-key')
+  savePublicKey(phoneNumber: string, publicKey: string) {
+    return this.authService.savePublicKey(phoneNumber, publicKey);
   }
 }

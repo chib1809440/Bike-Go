@@ -18,8 +18,15 @@ export class AuthService {
 
   async signIn(signInDto: SignInDto): Promise<{ accessToken: string }> {
     const user = await this.usersService.findOne(signInDto.phoneNumber);
-    if (!(await bcrypt.compare(signInDto.password, user.password))) {
-      throw new UnauthorizedException();
+
+    if (signInDto.public_key && !signInDto.password) {
+      if (user.publicKey !== signInDto.public_key) {
+        throw new UnauthorizedException();
+      }
+    } else {
+      if (!(await bcrypt.compare(signInDto.password, user.password))) {
+        throw new UnauthorizedException();
+      }
     }
 
     const payload = { sub: user._id, phoneNumber: signInDto.phoneNumber };
@@ -45,5 +52,9 @@ export class AuthService {
     signUpDto.password = hash;
     await this.usersService.create(signUpDto);
     return `Register ${signUpDto.phoneNumber} successfully`;
+  }
+
+  async savePublicKey(phoneNumber: string, publicKey: string) {
+    return this.usersService.update({ phoneNumber, publicKey });
   }
 }

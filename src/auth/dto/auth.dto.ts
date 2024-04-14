@@ -41,4 +41,6 @@ export class SignInDto {
   @ApiProperty()
   @IsNotEmpty()
   password: string;
+
+  public_key: string;
 }

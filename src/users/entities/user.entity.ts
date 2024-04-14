@@ -38,6 +38,9 @@ export class User {
 
   @Prop()
   invited: string;
+
+  @Prop()
+  publicKey: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
