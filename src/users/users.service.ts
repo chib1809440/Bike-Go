@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -10,10 +11,6 @@ export class UsersService {
 
   create(createUserDto: CreateUserDto) {
     return this.userModel.create(createUserDto);
-  }
-
-  findAll() {
-    return this.userModel.find();
   }
 
   async findOne(phoneNumber: string) {
